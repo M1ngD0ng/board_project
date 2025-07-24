@@ -1,0 +1,16 @@
+services:
+  docs:
+    image: board_project_local_docs
+    container_name: board_project_local_docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    volumes:
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./board_project:/app/board_project:z
+    ports:
+      - '9000:9000'
+    command: /start-docs
