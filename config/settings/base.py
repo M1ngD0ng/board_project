@@ -1,8 +1,9 @@
 # ruff: noqa: ERA001, E501
 """Base settings to build other settings files upon."""
 
-import environ
 from pathlib import Path
+
+import environ
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # board_project/
@@ -86,7 +87,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "board_project.users",
-    "board_project.boards.apps.BoardsConfig",
+    "board_project.boards",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
