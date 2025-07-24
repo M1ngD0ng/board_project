@@ -1,10 +1,8 @@
 # ruff: noqa: ERA001, E501
 """Base settings to build other settings files upon."""
 
-
-from pathlib import Path
-
 import environ
+from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # board_project/
@@ -88,6 +86,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "board_project.users",
+    "board_project.boards.apps.BoardsConfig",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -96,7 +95,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # MIGRATIONS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
-MIGRATION_MODULES = {"sites": "board_project.contrib.sites.migrations"}
+# MIGRATION_MODULES = {"sites": "board_project.contrib.sites.migrations"}
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
@@ -265,7 +264,6 @@ LOGGING = {
 REDIS_URL = env("REDIS_URL", default="redis://localhost:6379/0")
 REDIS_SSL = REDIS_URL.startswith("rediss://")
 
-
 # django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
@@ -283,7 +281,6 @@ ACCOUNT_FORMS = {"signup": "board_project.users.forms.UserSignupForm"}
 SOCIALACCOUNT_ADAPTER = "board_project.users.adapters.SocialAccountAdapter"
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_FORMS = {"signup": "board_project.users.forms.UserSocialSignupForm"}
-
 
 # Your stuff...
 # ------------------------------------------------------------------------------
