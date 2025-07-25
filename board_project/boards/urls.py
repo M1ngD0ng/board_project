@@ -12,21 +12,19 @@ urlpatterns = [
         ArticleListView.as_view(),
         name="article-list",
     ),
+    path("<int:board_id>/articles/", ArticleCreateView.as_view(), name="article-form"),
     path(
-        "<int:board_id>/articles/", ArticleCreateView.as_view(), name="article-create"
-    ),
-    path(
-        "<int:board_id>/articles/<int:article_id>",
+        "articles/<int:pk>",
         ArticleDetailView.as_view(),
         name="article-detail",
     ),
     path(
-        "<int:board_id>/articles/<int:article_id>",
+        "articles/<int:pk>/update/",
         ArticleUpdateView.as_view(),
         name="article-update",
     ),
     path(
-        "<int:board_id>/articles/<int:article_id>",
+        "articles/<int:pk>/delete/",
         ArticleDeleteView.as_view(),
         name="article-delete",
     ),
