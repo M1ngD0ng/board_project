@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+  게시판 : {{ board.name }}
+
+
+{% endblock title %}
+{% block content %}
+  <div class="container">
+    <h1>{{ board.name }}</h1>
+    <p>{{ board.description }}</p>
+    <hr>
+
+    <ul>
+      {# 'articles' 목록을 순회하면서 각 'article'을 보여줌 #}
+      {% for article in articles %}
+        <li>
+          {# 각 게시글의 상세 페이지로 이동하는 링크 #}
+          <a href="{% url 'boards:article-detail' article.pk %}">
+            {{ article.title }}
+          </a>
+          <small>| 작성자: {{ article.author.username }} | 작성일: {{ article.created_at|date:"Y.m.d" }}</small>
+        </li>
+      {% empty %}
+        <li>아직 게시글이 없습니다.</li>
+      {% endfor %}
+    </ul>
+
+    {# 새 글 작성 페이지로 이동하는 링크 #}
+    <a href="{% url 'boards:article-create' board.pk %}">새 글 작성하기</a>
+
+  </div>
+{% endblock content %}
