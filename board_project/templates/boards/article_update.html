@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}
+  게시판 : {{ article.board.name }}
+
+
+{% endblock title %}
+{% block content %}
+  <div class="container">
+    <h1>{{ article.board.name }}</h1>
+    <p>{{ article.board.description }}</p>
+    <hr>
+
+    <form class="form-horizontal"
+      method="post"
+      action="{% url 'boards:article-update' article.pk %}">
+  {% csrf_token %}
+  {{ form|crispy }}
+  <div class="control-group">
+    <div class="controls">
+      <button type="submit" class="btn btn-primary">수정하기</button>
+    </div>
+  </div>
+</form>
+
+  </div>
+{% endblock content %}
