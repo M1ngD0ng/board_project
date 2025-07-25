@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load static %}
+{% load crispy_forms_tags %}
 
 {% block title %}
   게시판 : {{ article.board.name }}
@@ -14,9 +14,6 @@
     <hr>
 
     <h2>글 제목 : {{ article.title }}</h2>
-    <div>내용</div>
-    <p>{{ article.content }}</p>
-    <small>| 작성자: {{ article.author.username }} | 작성일: {{ article.created_at|date:"Y.m.d H:i" }} | 수정일: {{ article.modified_at|date:"Y.m.d H:i" }}</small>
   {% if user.is_authenticated %}
     {% if article.author == user %}
       <a href="{% url 'boards:article-update' article.pk %}" class="btn btn-primary">수정</a>
@@ -24,6 +21,37 @@
             삭제
         </button>
       {% endif %}
+  {% endif %}
+    <div>내용</div>
+    <p>{{ article.content }}</p>
+    <small>| 작성자: {{ article.author.username }} | 작성일: {{ article.created_at|date:"Y.m.d H:i" }} | 수정일: {{ article.modified_at|date:"Y.m.d H:i" }}</small>
+
+  <div class="container">
+    <ul>
+      {% for comment in article.comments.all %}
+        <li>
+        {{ comment.content }}
+        </li>
+        {% empty %}
+        <li>아직 댓글이 없습니다.</li>
+      {% endfor %}
+    </ul>
+
+  </div>
+
+
+    {% if user.is_authenticated %}
+    <div class="container">
+        <form action="{% url 'boards:comment-form' article.pk %}" method="post" class="form-horizontal">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="control-group">
+              <div class="controls">
+                <button type="submit" class="btn btn-primary">댓글 등록</button>
+              </div>
+            </div>
+        </form>
+    </div>
   {% endif %}
   </div>
 
