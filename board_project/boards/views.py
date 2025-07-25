@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -53,6 +54,13 @@ class ArticleUpdateView(LoginRequiredMixin, UpdateView):
 
 class ArticleDeleteView(LoginRequiredMixin, DeleteView):
     model = Article
+
+    def get_success_url(self):
+        board_id = self.object.board.id
+        return reverse_lazy("boards:article-list", kwargs={"board_id": board_id})
+
+    def get(self, request, *args, **kwargs):
+        return redirect(self.get_object().get_absolute_url())
 
 
 class ArticleDetailView(DetailView):

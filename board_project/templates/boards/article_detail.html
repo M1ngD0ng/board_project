@@ -20,9 +20,31 @@
   {% if user.is_authenticated %}
     {% if article.author == user %}
       <a href="{% url 'boards:article-update' article.pk %}" class="btn btn-primary">수정</a>
-      <a href="{% url 'boards:article-delete' article.pk %}" class="btn btn-danger">삭제</a>
-
+      <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+            삭제
+        </button>
       {% endif %}
   {% endif %}
   </div>
+
+  <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">삭제 확인</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>정말로 '{{ article.title }}' 게시글을 삭제하시겠습니까?<br>이 작업은 되돌릴 수 없습니다.</p>
+            </div>
+            <div class="modal-footer">
+                <form action="{% url 'boards:article-delete' pk=article.pk %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">예, 삭제합니다.</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니요, 취소합니다.</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
