@@ -1,13 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import (
-    CreateView,
-    DeleteView,
-    DetailView,
-    ListView,
-    UpdateView,
-)
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  UpdateView)
 
 from .models import *
 
@@ -24,6 +19,22 @@ class BoardListView(ListView):
 
 class ArticleCreateView(LoginRequiredMixin, CreateView):
     model = Article
+    fields = ["title", "content"]
+    template_name = "boards/article_form.html"
+
+    def form_valid(self, form):
+        board = Board.objects.get(id=self.kwargs["board_id"])
+        form.instance.board = board
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["board"] = Board.objects.get(id=self.kwargs["board_id"])
+        return context
+
+    def get_success_url(self):
+        return reverse("boards:article-detail", kwargs={"pk": self.object.pk})
 
 
 class ArticleUpdateView(LoginRequiredMixin, UpdateView):
@@ -36,6 +47,7 @@ class ArticleDeleteView(LoginRequiredMixin, DeleteView):
 
 class ArticleDetailView(DetailView):
     model = Article
+    context_object_name = "article"
 
 
 class ArticleListView(ListView):
