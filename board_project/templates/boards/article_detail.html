@@ -16,6 +16,13 @@
     <h2>글 제목 : {{ article.title }}</h2>
     <div>내용</div>
     <p>{{ article.content }}</p>
-    <small>| 작성자: {{ article.author.username }} | 작성일: {{ article.created_at|date:"Y.m.d" }}</small>
+    <small>| 작성자: {{ article.author.username }} | 작성일: {{ article.created_at|date:"Y.m.d H:i" }} | 수정일: {{ article.modified_at|date:"Y.m.d H:i" }}</small>
+  {% if user.is_authenticated %}
+    {% if article.author == user %}
+      <a href="{% url 'boards:article-update' article.pk %}" class="btn btn-primary">수정</a>
+      <a href="{% url 'boards:article-delete' article.pk %}" class="btn btn-danger">삭제</a>
+
+      {% endif %}
+  {% endif %}
   </div>
 {% endblock content %}
