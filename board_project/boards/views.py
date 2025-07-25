@@ -16,6 +16,12 @@ def index(request):
     return HttpResponse("Hello World!")
 
 
+class BoardListView(ListView):
+    model = Board
+    template_name = "boards/board_list.html"
+    context_object_name = "boards"
+
+
 class ArticleCreateView(LoginRequiredMixin, CreateView):
     model = Article
 
@@ -34,3 +40,15 @@ class ArticleDetailView(DetailView):
 
 class ArticleListView(ListView):
     model = Article
+    template_name = "boards/article_list.html"
+    context_object_name = "articles"
+
+    def get_queryset(self, **kwargs):
+        return Article.objects.filter(board=self.kwargs["board_id"]).order_by(
+            "-created_at"
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["board"] = Board.objects.get(id=self.kwargs["board_id"])
+        return context

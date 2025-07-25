@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+  게시판 목록
+
+{% endblock title %}
+{% block content %}
+  <div class="container">
+    <ul>
+      {% for board in boards %}
+        <li>
+          <a href="{% url 'boards:article-list' board.pk %}">
+            {{ board.name }}
+          </a>
+        </li>
+      {% empty %}
+        <li>아직 게시판이 없습니다.</li>
+      {% endfor %}
+    </ul>
+
+  </div>
+{% endblock content %}
