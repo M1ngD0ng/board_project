@@ -1,7 +1,16 @@
 from django.urls import path
 
 from . import views
-from .views import *
+from .views import (
+    ArticleCreateView,
+    ArticleDeleteView,
+    ArticleDetailView,
+    ArticleListView,
+    ArticleUpdateView,
+    CommentCreateView,
+    CommentDeleteView,
+    CommentUpdateView,
+)
 
 app_name: str = "boards"
 
