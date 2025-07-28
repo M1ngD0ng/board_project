@@ -111,3 +111,24 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self) -> str:
         return reverse("boards:article-detail", kwargs={"pk": self.object.article.pk})
+
+
+class CommentUpdateView(LoginRequiredMixin, UpdateView):
+    model: Comment = Comment
+    form_class: CommentForm = CommentForm
+
+    def get_success_url(self) -> str:
+        return reverse("boards:article-detail", kwargs={"pk": self.object.article.pk})
+
+
+class CommentDeleteView(LoginRequiredMixin, DeleteView):
+    model: Comment = Comment
+
+    def get_success_url(self) -> str:
+        article_id = self.object.article.id
+        return reverse_lazy("boards:article-detail", kwargs={"pk": article_id})
+
+    def get(
+        self, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponseRedirect:
+        return redirect("boards:article-detail", kwargs={"pk": self.object.article.pk})

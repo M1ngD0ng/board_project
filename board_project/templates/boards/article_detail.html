@@ -14,78 +14,153 @@
     <hr>
 
     <h2>글 제목 : {{ article.title }}</h2>
-  {% if user.is_authenticated and article.author == user %}
+    {% if user.is_authenticated and article.author == user %}
       <a href="{% url 'boards:article-update' article.pk %}" class="btn btn-primary">수정</a>
-      <button type="button" id="delete-btn" class="btn btn-danger">
-            삭제
-        </button>
-  {% endif %}
+      <button type="button" id="delete-article-btn" class="btn btn-danger">
+        삭제
+      </button>
+    {% endif %}
     <div>내용</div>
     <p>{{ article.content }}</p>
-    <small>| 작성자: {{ article.author.username }} | 작성일: {{ article.created_at|date:"Y.m.d H:i" }} | 수정일: {{ article.modified_at|date:"Y.m.d H:i" }}</small>
+    <small>| 작성자: {{ article.author.username }} | 작성일: {{ article.created_at|date:"Y.m.d H:i" }} |
+      수정일: {{ article.modified_at|date:"Y.m.d H:i" }}</small>
 
-  <div class="container">
-  <h3>댓글 ({{ article.comments.count }})</h3>
-    <ul>
-      {% for comment in article.comments.all %}
-        <li>
-          <strong>{{ comment.author.username }}</strong>
-          <p>{{ comment.content|linebreaksbr }}</p>
-        </li>
+    <div class="container">
+      <h3>댓글 ({{ article.comments.count }})</h3>
+      <ul>
+        {% for comment in article.comments.all %}
+          <li>
+            <strong>{{ comment.author.username }}</strong>
+            <p id="comment-content-{{ comment.pk }}">{{ comment.content|linebreaksbr }}</p>
+            {% if user.is_authenticated and comment.author == user %}
+              <button type="button"
+                      class="btn btn-primary btn-sm edit-comment-btn"
+                      data-bs-toggle="modal"
+                      data-bs-target="#editCommentModal"
+                      data-comment-pk="{{ comment.pk }}"
+                      data-update-url="{% url 'boards:comment-update' pk=comment.pk %}"
+                      data-content="{{ comment.content }}">
+                수정
+              </button>
+              <button type="button" class="btn btn-danger btn-sm delete-comment-btn"
+                      data-comment-id="{{ comment.pk }}">삭제
+              </button>
+            {% endif %}
+          </li>
         {% empty %}
-        <li>아직 댓글이 없습니다.</li>
-      {% endfor %}
-    </ul>
+          <li>아직 댓글이 없습니다.</li>
+        {% endfor %}
+      </ul>
 
-  </div>
+    </div>
 
 
     {% if user.is_authenticated %}
-    <div class="container">
+      <div class="container">
         <form action="{% url 'boards:comment-form' article.pk %}" method="post" class="form-horizontal">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <div class="control-group">
-              <div class="controls">
-                <button type="submit" class="btn btn-primary">댓글 등록</button>
-              </div>
+          {% csrf_token %}
+          {{ form|crispy }}
+          <div class="control-group">
+            <div class="controls">
+              <button type="submit" class="btn btn-primary">댓글 등록</button>
             </div>
+          </div>
         </form>
-    </div>
-  {% endif %}
+      </div>
+    {% endif %}
   </div>
 
-  <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+  <div class="modal fade" id="deleteArticleConfirmModal" tabindex="-1" aria-labelledby="deleteArticleConfirmModalLabel"
+       aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteConfirmModalLabel">삭제 확인</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>정말로 '{{ article.title }}' 게시글을 삭제하시겠습니까?<br>이 작업은 되돌릴 수 없습니다.</p>
-            </div>
-            <div class="modal-footer">
-                <form action="{% url 'boards:article-delete' pk=article.pk %}" method="post" class="d-inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">예, 삭제합니다.</button>
-                </form>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니요, 취소합니다.</button>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteArticleConfirmModalLabel">삭제 확인</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+          <p>정말로 '{{ article.title }}' 게시글을 삭제하시겠습니까?<br>이 작업은 되돌릴 수 없습니다.</p>
+        </div>
+        <div class="modal-footer">
+          <form action="{% url 'boards:article-delete' pk=article.pk %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">예, 삭제합니다.</button>
+          </form>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니요, 취소합니다.</button>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+
+  <div class="modal fade" id="deleteCommentConfirmModal" tabindex="-1" aria-labelledby="deleteCommentConfirmModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteCommentConfirmModalLabel">삭제 확인</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>정말로 '{{ comment.content }}' 댓글을 삭제하시겠습니까?<br>이 작업은 되돌릴 수 없습니다.</p>
+        </div>
+        <div class="modal-footer">
+          <form id="delete-comment-form" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">예, 삭제합니다.</button>
+          </form>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">아니요, 취소합니다.</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editCommentModal" tabindex="-1" aria-labelledby="editCommentModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editCommentModalLabel">댓글 수정</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="edit-comment-form" method="post">
+          {% csrf_token %}
+          <div class="modal-body">
+            <textarea id="edit-comment-textarea" name="content" class="form-control" rows="4"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">수정 완료</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 {% endblock content %}
 
 {% block javascript %}
   {{ block.super }}
   <script>
-    $(document).ready(function() {
-      $("#delete-btn").on("click", function() {
-        $("#deleteConfirmModal").modal('show');
-
+    $(document).ready(function () {
+      $("#delete-article-btn").on("click", function () {
+        $("#deleteArticleConfirmModal").modal('show');
       });
 
+      $(".delete-comment-btn").on("click", function () {
+        var commentId = $(this).data("comment-id");
+        var deleteUrl = "/boards/comments/" + commentId + "/delete/";
+
+        $("#delete-comment-form").attr("action", deleteUrl);
+        $("#deleteCommentConfirmModal").modal('show');
+      });
+
+      $(".edit-comment-btn").on("click", function () {
+        var updateUrl = $(this).data("update-url");
+        var currentContent = $(this).data("content");
+
+        $("#edit-comment-form").attr("action", updateUrl);
+
+        $("#edit-comment-textarea").val(currentContent);
+      });
     });
   </script>
 {% endblock javascript %}
