@@ -16,7 +16,7 @@ from django.views.generic import (
 )
 
 from .forms import CommentForm
-from .models import *
+from .models import Article, Board, Comment
 
 
 class BoardListView(ListView):
