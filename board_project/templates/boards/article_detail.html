@@ -14,23 +14,23 @@
     <hr>
 
     <h2>글 제목 : {{ article.title }}</h2>
-  {% if user.is_authenticated %}
-    {% if article.author == user %}
+  {% if user.is_authenticated and article.author == user %}
       <a href="{% url 'boards:article-update' article.pk %}" class="btn btn-primary">수정</a>
-      <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+      <button type="button" id="delete-btn" class="btn btn-danger">
             삭제
         </button>
-      {% endif %}
   {% endif %}
     <div>내용</div>
     <p>{{ article.content }}</p>
     <small>| 작성자: {{ article.author.username }} | 작성일: {{ article.created_at|date:"Y.m.d H:i" }} | 수정일: {{ article.modified_at|date:"Y.m.d H:i" }}</small>
 
   <div class="container">
+  <h3>댓글 ({{ article.comments.count }})</h3>
     <ul>
       {% for comment in article.comments.all %}
         <li>
-        {{ comment.content }}
+          <strong>{{ comment.author.username }}</strong>
+          <p>{{ comment.content|linebreaksbr }}</p>
         </li>
         {% empty %}
         <li>아직 댓글이 없습니다.</li>
@@ -76,3 +76,16 @@
     </div>
 </div>
 {% endblock content %}
+
+{% block javascript %}
+  {{ block.super }}
+  <script>
+    $(document).ready(function() {
+      $("#delete-btn").on("click", function() {
+        $("#deleteConfirmModal").modal('show');
+
+      });
+
+    });
+  </script>
+{% endblock javascript %}

@@ -20,6 +20,7 @@
           {# 각 게시글의 상세 페이지로 이동하는 링크 #}
           <a href="{% url 'boards:article-detail' article.pk %}">
             {{ article.title }}
+            <span>({{ article.comment_count }})</span>
           </a>
           <small>| 작성자: {{ article.author.username }} | 작성일: {{ article.created_at|date:"Y.m.d" }}</small>
         </li>

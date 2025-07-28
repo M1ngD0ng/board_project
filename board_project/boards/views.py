@@ -1,6 +1,7 @@
 from typing import Any, Dict, List
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 from django.db.models.query import QuerySet
 from django.forms.models import BaseModelForm
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
@@ -83,8 +84,11 @@ class ArticleListView(ListView):
     context_object_name: str = "articles"
 
     def get_queryset(self, **kwargs: Any) -> QuerySet[Article]:
-        return Article.objects.filter(board=self.kwargs["board_id"]).order_by(
-            "-created_at"
+        queryset = super().get_queryset(**kwargs)
+        return (
+            queryset.filter(board_id=self.kwargs["board_id"])
+            .annotate(comment_count=Count("comments"))
+            .order_by("-created_at")
         )
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
