@@ -4,15 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
-# Create your models here.
-
-
-class Board(models.Model):
-    name: str = models.CharField(max_length=100)
-    description: str = models.TextField()
-
-    def __str__(self) -> str:
-        return self.name
+from .board import Board
 
 
 class Article(models.Model):
@@ -34,18 +26,3 @@ class Article(models.Model):
 
     def get_absolute_url(self) -> str:
         return reverse("boards:article-detail", kwargs={"pk": self.pk})
-
-
-class Comment(models.Model):
-    article: Article = models.ForeignKey(
-        Article, on_delete=models.CASCADE, related_name="comments"
-    )
-    author: "User" = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comments"
-    )
-    content: str = models.TextField()
-    created_at: datetime = models.DateTimeField(auto_now_add=True)
-    modified_at: datetime = models.DateTimeField(auto_now=True)
-
-    def __str__(self) -> str:
-        return f"{self.author.username}의 댓글 : {self.content[:20]}"
