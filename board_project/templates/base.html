@@ -3,6 +3,7 @@
 {% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}">
   <head>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <title>
@@ -26,7 +27,7 @@
 <!-- Your stuff: Third-party CSS libraries go here -->
 <!-- This file stores project-specific CSS -->
 
-  
+
   <link href="{% static 'css/project.css' %}" rel="stylesheet" />
 
 
@@ -48,7 +49,7 @@
 
 <!-- place project specific Javascript in this file -->
 
-  
+
   <script defer src="{% static 'js/project.js' %}"></script>
 
 
