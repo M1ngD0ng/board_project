@@ -1,3 +1,4 @@
-from .article import Article
-from .board import Board
-from .comment import Comment
+# isort: skip_file
+from .board import *
+from .article import *
+from .comment import *
