@@ -22,7 +22,8 @@ class Article(models.Model):
     modified_at: datetime = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return f"[{self.board.name}] {self.title}"
+        # return f"[{self.board.name}] {self.title}"
+        return self.title
 
     def get_absolute_url(self) -> str:
         return reverse("boards:article-detail", kwargs={"pk": self.pk})
