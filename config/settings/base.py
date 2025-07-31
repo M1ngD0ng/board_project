@@ -66,6 +66,8 @@ WSGI_APPLICATION = "config.wsgi.application"
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
+    "board_project.boards.commons.apps.SuitConfig",
+    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -73,7 +75,6 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # "django.contrib.humanize", # Handy template tags
-    "django.contrib.admin",
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
@@ -81,7 +82,6 @@ THIRD_PARTY_APPS = [
     "crispy_bootstrap5",
     "allauth",
     "allauth.account",
-    "allauth.mfa",
     "allauth.socialaccount",
 ]
 
@@ -144,7 +144,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
 ]
 
 # STATIC
@@ -285,3 +284,20 @@ SOCIALACCOUNT_FORMS = {"signup": "board_project.users.forms.UserSocialSignupForm
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+# django-allauth 설정
+# ------------------------------------------------------------------------------
+# Django의 sites 프레임워크를 사용하기 위해 SITE_ID를 지정합니다.
+SITE_ID = 1
+
+# 이메일 인증 방식을 지정합니다. (오류 해결을 위해 필수)
+# 'mandatory': 이메일 인증을 해야만 로그인이 가능
+# 'optional': 인증 메일을 보내지만, 인증하지 않아도 로그인 가능
+# 'none': 이메일 인증 기능을 사용하지 않음
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+# 추가적으로 많이 사용하는 기본 설정들
+ACCOUNT_EMAIL_REQUIRED = True  # 회원가입 시 이메일 주소 필수
+ACCOUNT_USERNAME_REQUIRED = False  # 회원가입 시 아이디(username) 대신 이메일 사용
+ACCOUNT_SESSION_REMEMBER = True  # 브라우저를 닫아도 로그인 유지
+ACCOUNT_AUTHENTICATION_METHOD = "email"  # 로그인 시 아이디 대신 이메일 사용
+ACCOUNT_UNIQUE_EMAIL = True

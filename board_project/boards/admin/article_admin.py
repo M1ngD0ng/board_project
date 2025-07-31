@@ -118,9 +118,9 @@ class ArticleAdmin(admin.ModelAdmin):
 
     paginator = NoCountPaginator
     preserve_filters = True  # 필터를 적용한 상태로 객체를 생성, 수정, 삭제한 뒤에 기존 필터 상태를 유지할지 여부 결정
-    show_facets = (  # 각 필터 항목 옆에 해당 항목에 몇 개의 결과가 있는지 표시(always는 성능 저하 발생 가능)
-        admin.ShowFacets.ALWAYS
-    )
+    # show_facets = (  # 각 필터 항목 옆에 해당 항목에 몇 개의 결과가 있는지 표시(always는 성능 저하 발생 가능)
+    #     admin.ShowFacets.ALWAYS
+    # )
     inlines = [CommentInline]
     actions = [make_notice]
     actions_on_top = False
