@@ -14,6 +14,7 @@ class Comment(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comments"
     )
     content: str = models.TextField()
+    is_visible=models.BooleanField(default=True,verbose_name="is_visible")
     created_at: datetime = models.DateTimeField(auto_now_add=True)
     modified_at: datetime = models.DateTimeField(auto_now=True)
 
