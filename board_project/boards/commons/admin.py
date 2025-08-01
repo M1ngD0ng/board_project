@@ -6,7 +6,7 @@ from django.db import models
 class SiteBaseModelAdmin(admin.ModelAdmin):
     formfield_overrides = (
         {
-            models.TextField:{"widget": forms.Textarea(attrs={"rows": 4, "cols": 80})},
+            models.TextField: {"widget": forms.Textarea(attrs={"rows": 4, "cols": 80})},
             models.CharField: {"widget": forms.TextInput(attrs={"class": "form-control"})},
         }
     )
