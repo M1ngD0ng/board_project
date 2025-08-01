@@ -9,6 +9,7 @@ from django.db.models.functions import Concat
 from django.utils import timezone
 from django.utils.functional import cached_property
 
+from ..commons.admin import SiteBaseModelAdmin
 from ..models import Article, Comment
 
 
@@ -56,7 +57,7 @@ class RecentArticlesFilter(admin.SimpleListFilter):  # 커스텀 필터
 
 
 @admin.register(Article)
-class ArticleAdmin(admin.ModelAdmin):
+class ArticleAdmin(SiteBaseModelAdmin):
     # list_display = ("title", "content", "author", "created_at")
     # fields = ("title", "content", "board", "author")
     readonly_fields = ("created_at", "modified_at")
@@ -76,16 +77,10 @@ class ArticleAdmin(admin.ModelAdmin):
         ),
     ]
 
-    formfield_overrides = (
-        {  # 특정 데이터베이스 필드 타입에 대한 기본 폼 필드(위젯)을 한꺼번에 변경
-            models.TextField: {"widget": forms.Textarea(attrs={"rows": 4, "cols": 80})},
-            models.CharField: {"widget": forms.TextInput(attrs={"size": 50})},
-        }
-    )
 
     ordering = ("-created_at",)
     sortable_by = ("title", "created_at")  # 정렬 기준 제어
-    view_on_site = False
+    # view_on_site = False
     list_display_links = ("title", "content")
     # list_filter = (
     #     "author",
@@ -102,8 +97,6 @@ class ArticleAdmin(admin.ModelAdmin):
     list_select_related = (
         "board",
     )  # get_board_name 할때 성능 문제 발생 방지 -> 미리 관련 객체 정보까지가져와서 성능 향상시킴
-    list_per_page = 10
-    list_max_show_all = 500  # 서버 성능을 보호하기 위한 안전장치 역할.500 이하일 떄에만 "모두 보기" 링크가 표시됨
     list_editable = (
         "author",
     )  # list_display에 표시된 필드들을 상세 페이지에 들어가지 않고도 수정하고 저장할 수 있게 함
@@ -112,11 +105,7 @@ class ArticleAdmin(admin.ModelAdmin):
         "제목, 내용으로 검색할 수 있습니다."  # 검색창 아래에 표시될 안내 문구
     )
     date_hierarchy = "created_at"  # 해당 필드를 기준으로 탐색할 수 있게 만들어줌
-    save_as = True  # 새 이름으로 저장 기능 활성화
-    save_as_continue = False  # 새 이름으로 저장 후, 사용자를 어디로 보낼지 제어
-    save_on_top = True  # 저장 관련 버튼을 폼 상단에도 추가함
 
-    preserve_filters = True  # 필터를 적용한 상태로 객체를 생성, 수정, 삭제한 뒤에 기존 필터 상태를 유지할지 여부 결정\
 
     # paginator = NoCountPaginator
     # show_full_result_count = False
@@ -125,5 +114,21 @@ class ArticleAdmin(admin.ModelAdmin):
     # )
     inlines = [CommentInline]
     actions = [make_notice]
-    actions_on_top = False
-    actions_on_bottom = True
+    #
+    # formfield_overrides = (
+    #     {  # 특정 데이터베이스 필드 타입에 대한 기본 폼 필드(위젯)을 한꺼번에 변경
+    #         models.TextField: {"widget": forms.Textarea(attrs={"rows": 4, "cols": 80})},
+    #         models.CharField: {"widget": forms.TextInput(attrs={"size": 50})},
+    #     }
+    # )
+    #
+    # list_per_page = 10
+    # list_max_show_all = 500  # 서버 성능을 보호하기 위한 안전장치 역할.500 이하일 떄에만 "모두 보기" 링크가 표시됨
+    #
+    # save_as = True  # 새 이름으로 저장 기능 활성화
+    # save_as_continue = False  # 새 이름으로 저장 후, 사용자를 어디로 보낼지 제어
+    # save_on_top = True  # 저장 관련 버튼을 폼 상단에도 추가함
+
+    # preserve_filters = True  # 필터를 적용한 상태로 객체를 생성, 수정, 삭제한 뒤에 기존 필터 상태를 유지할지 여부 결정\
+    # actions_on_top = False
+    # actions_on_bottom = True

@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from ..commons.admin import SiteBaseModelAdmin
 from ..models import Comment
 
 
@@ -14,15 +15,14 @@ def make_visible(modeladmin, request, queryset):
 
 
 @admin.register(Comment)
-class CommentAdmin(admin.ModelAdmin):
-    list_display = ("get_board_name", "article", "content", "author", "created_at")
+class CommentAdmin(SiteBaseModelAdmin):
+    list_display = ("get_board_name", "article", "content", "author", "is_visible", "created_at")
     list_display_links = ("article", "content")
-    list_select_related = ("article",)
+    list_select_related = ("article__board", "author")
     list_editable = ("author",)
     ordering = ("-created_at",)
     search_fields = ("content",)
-    search_help_text = ("댓글 내용으로 검색할 수 있습니다.",)
-
+    search_help_text = "댓글 내용으로 검색할 수 있습니다."
     readonly_fields = ("created_at", "modified_at")
 
     actions = [make_hidden, make_visible]
