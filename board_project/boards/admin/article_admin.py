@@ -102,7 +102,7 @@ class ArticleAdmin(admin.ModelAdmin):
     list_select_related = (
         "board",
     )  # get_board_name 할때 성능 문제 발생 방지 -> 미리 관련 객체 정보까지가져와서 성능 향상시킴
-    list_per_page = 50
+    list_per_page = 10
     list_max_show_all = 500  # 서버 성능을 보호하기 위한 안전장치 역할.500 이하일 떄에만 "모두 보기" 링크가 표시됨
     list_editable = (
         "author",
@@ -116,8 +116,10 @@ class ArticleAdmin(admin.ModelAdmin):
     save_as_continue = False  # 새 이름으로 저장 후, 사용자를 어디로 보낼지 제어
     save_on_top = True  # 저장 관련 버튼을 폼 상단에도 추가함
 
-    paginator = NoCountPaginator
-    preserve_filters = True  # 필터를 적용한 상태로 객체를 생성, 수정, 삭제한 뒤에 기존 필터 상태를 유지할지 여부 결정
+    preserve_filters = True  # 필터를 적용한 상태로 객체를 생성, 수정, 삭제한 뒤에 기존 필터 상태를 유지할지 여부 결정\
+
+    # paginator = NoCountPaginator
+    # show_full_result_count = False
     # show_facets = (  # 각 필터 항목 옆에 해당 항목에 몇 개의 결과가 있는지 표시(always는 성능 저하 발생 가능)
     #     admin.ShowFacets.ALWAYS
     # )
