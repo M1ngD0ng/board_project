@@ -9,6 +9,7 @@ class CommonsConfig(AppConfig):
 
 
 class SuitConfig(DjangoSuitConfig):
+    layout = "vertical"
     menu = (
         ParentItem(
             "사용자 관리",
